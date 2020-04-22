@@ -1,4 +1,4 @@
-# Templating
+# Templates
 We have till now only made websites which were basically black text on white page, to make beautiful websites we can make `ctx.body` a string of HTML and CSS like `ctx.body = '<p style="color: aqua;"> Colourfull text!! </p>'` but all that code in your app.js file would just create a lot of mess and also we'll have to dynamically change content of the webpage sometimes, which will be very hard using string manipulation.
 
 So we'll use a template system to seperate all HTML files in a folder called `views`, template systems like `pug` or `EJS` also have special features like conditional code (if else), loops, and `pug` makes it very convinient to write HTML.
