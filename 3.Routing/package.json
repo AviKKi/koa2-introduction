@@ -1,0 +1,14 @@
+{
+  "name": "routing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.11.0",
+    "koa-router": "^8.0.8",
+    "nodemon": "^2.0.3"
+  },
+  "scripts": {
+    "dev": "nodemon app.js"
+  }
+}
