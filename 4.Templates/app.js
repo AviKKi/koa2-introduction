@@ -7,7 +7,7 @@ app = new Koa()
 app.use(views(path.join(__dirname, 'views'), { extension: 'ejs' }))
 
 app.use(
-    async ctx => await ctx.render('index')
+    async ctx => await ctx.render('index', {name: 'AViKKi'})
 )
 
 app.listen(3000, () => console.log("listening on localhost:3000"))
