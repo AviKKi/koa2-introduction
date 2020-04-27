@@ -1,0 +1,19 @@
+<form method="GET" action="">
+    <h3>New todo<h3>
+            <input type="text" name="name" />
+            <input type="submit" value="Add" />
+</form>
+<form method="GET" action="">
+    <h3>Todos:</h3>
+    <% for(let todo of todos){ %>
+        <input 
+            type="checkbox" 
+            <%= todo.is_done === 1 ? "checked" : "" %> 
+            name="id" 
+            value="<%= todo.id %>" 
+        />
+        <%= todo.name %>
+        <br />
+    <% } %>
+    <input type="submit" value="Complete" />
+</form>
