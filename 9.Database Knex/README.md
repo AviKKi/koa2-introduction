@@ -8,7 +8,7 @@ Database are an import part of backend, it's simply a piece of software that sto
 
 Example of SQL database showing database that stores data of **Published Research Papers** and **Person** who wrote it -
 
-![SQL SQL](. /images/sql. png)
+![SQL SQL](./images/sql.png)
 
 The bottom half of the image shows an actual database with data, we have 2 tables `Person` and `Publication` , person has `Name` and `Age` of a person and also an `ID` that can help distinguish between people with same `Name` and `Age` . 
 And publication has a `Name` i. e. title of the research paper and a unique `ID` of paper as was for person. 
