@@ -196,5 +196,211 @@ Now open your browser to see if everything is working fine, and voila you are al
 
 </details>
 
-### Adding persistance
+### Adding persistance   
+Install dependencies
+`$ yarn global add typeorm`
+
+Now intialize your project
+`$ typeorm init --name [MyProject] --database sqlite`
+replace [MyProject] with name of your folder
+
+Now few extra files would be added to our directory
+```
+MyProject
+├── src              // place of your TypeScript code
+│   ├── entity       // place where your entities (database models) are stored
+│   │   └── User.ts  // sample entity
+│   ├── migration    // place where your migrations are stored
+│   └── index.ts     // start point of your application
+├── .gitignore       // standard gitignore file
+├── ormconfig.json   // ORM and database connection configuration
+├── package.json     // node module dependencies
+├── README.md        // simple readme file
+└── tsconfig.json    // TypeScript compiler options
+```
+This does reset `src\index.js` file but there wasn't much code anyways so I'll fix it later
+
+Install the dependencies
+`$ yarn install`
+
+Update the code, delete file `src/entity/User.ts` as we won't need it, and update `src/index.ts` as follows
+```js
+import "reflect-metadata";
+import { createConnection } from "typeorm";
+
+import app from './app'
+
+createConnection().then(async connection => {
+
+    app.listen(3000, () => console.log("listening at port 3000"))
+
+}).catch(error => console.log(error));
+```
+
+Here we have created a connection to the databse and running the server if connection was succesful else we log the error.
+
+Now let's create some tables, How do we create a table in an ORM? by creating a class, so we'll create a BlogPost class `src\entity\BlogPost.ts`
+```ts
+export class BlogPost { 
+  id: number
+  title: string
+  content: string
+  isPublished: boolean
+}
+```
+In TypeORM not every class is a table in database only classes decorated with `@Entity` decorater are tables, same for columns, decorate them with `@Column`.
+```ts
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+
+@Entity()
+export class BlogPost { 
+  
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column()
+  title: string
+  
+  @Column()
+  content: string
+  
+  @Column()
+  isPublished: boolean
+}
+```
+The decorator `@PrimaryGeneratedColumn` defines a primary key column which will be auto-incremented.
+
+Inserting something to the database, in our `src\index.ts` we can add something use the connection to add something to the database
+```ts
+import "reflect-metadata";
+import { createConnection } from "typeorm";
+
+import app from './app'
+import { BlogPost } from './entity/BlogPost'
+
+createConnection().then(async connection => {
+    let post = new BlogPost()
+    post.title = "A intro to TypeORM"
+    post.content = "read the README :P"
+    post.isPublished = false
+
+    await connection.manager.save(post)
+    console.log(`post saved with id ${post.id}`)
+    
+    app.listen(3000, () => console.log("listening at port 3000"))
+
+}).catch(error => console.log(error));
+```
+
+If you run your server now you'll see this in the console
+```
+post saved with id 1
+listening at port 3000
+```
+Restarting the server will increment the id, also you'll see a new `database.sqlite` file
+
+Note here that we have directly used the `connection.manager` which is not very good method, we'll `repositories` later in this section with `getRepository` method.
+
+Next we are going to create a view to list all posts, create a blog post and read a specific post.
+#### List Post View
+`src/controllers/getHome.ts`
+```ts
+import { Context } from 'koa'
+import { getManager } from 'typeorm'
+import { BlogPost } from '../entity/BlogPost'
+
+const getHome = async (ctx: Context) => {
+    const postRepository = getManager().getRepository(BlogPost)
+    const allPosts = await postRepository.find()
+    await ctx.render('index', { allPosts })
+}
+
+export default getHome
+```
+In typeORM we have `EntityManager` that can create, read, update, delete any entity, what we used earlier but here we are using `Repository` they are like `EntityManager` but operate around only one entity.
+
+All queries on BlogPost table can be done with `postRepository`, doing a `postRepository.find()` is same as SQLs `SELECT *` i.e. we get all the posts, in production you would like to limit it to some number.
+
+Update the home template to show the blogposts and I have included some styling too.
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Blog</title>
+    <style>
+        body {
+            margin: 0px;
+            height: 100vh;
+            display: flex;
+        }
+
+        h1 {
+            font-family: sans-serif;
+            color: #3D3D3D;
+        }
+
+        .section {
+            flex: 1;
+        }
+
+        #left-section {
+            background: url('https://images.unsplash.com/photo-1509966756634-9c23dd6e6815?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=720&q=80') no-repeat;
+        }
+
+        #left-section h1 {
+            padding: 0 0.5em;
+            font-size: 3em;
+        }
+
+        #right-section {
+            padding: 25px;
+            background-color: lightcyan;
+        }
+
+        #create-btn {
+            text-decoration: none;
+            background-color: bisque;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            color: purple;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="section" id="left-section">
+        <img style="position: absolute;" src="">
+        <h1>An Awesome Blog</h1>
+    </div>
+    <div class="section" id="right-section">
+        <a id="create-btn" href="/create">
+            Create a Post
+        </a>
+        <h1 style="font-size:2.3em">Blog Posts</h1>
+        <% for(var i=0; i<allPosts.length; i++) {%>
+        <a href="post/<%=  allPosts[i].id %>">
+            <h3><%= allPosts[i].title %></h3>
+        </a>
+        <% } %>
+    </div>
+</body>
+
+</html>
+```
+that is a lot of code but most important part is, where we loop through allPosts and show each one in a hyperlink tag, users are only shown `BlogPost.title`, with url `post/<BlogPost.id>`
+```
+     <% for(var i=0; i<allPosts.length; i++) {%>
+        <a href="post/<%=  allPosts[i].id %>">
+            <h3><%= allPosts[i].title %></h3>
+        </a>
+        <% } %>
+```
+
+#### Blog post page
+Now we need a page where blog posts can be read, 
 todo- do it later
