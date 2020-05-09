@@ -519,3 +519,34 @@ The `id` in the url can be accessed with `ctx.params.id`. Instead of `.find` we 
 When no result is found `.findOne` method will return undefined, in that case we are creating a post with custom title and content to make sure app doesn't crash, a better approach would be redirecting user to a `404 page` or render a template that shows `404 Page not found`, try doing that later.
 
 #### Create a blog post
+Finally we'll create a blogpost then we'll be done for this section, add a template `src/view/create.ejs`
+```html
+```
+
+Create a controller for this view now, `src/controllers/getPostCreate.ts`
+```ts
+
+```
+
+Add the url to routes
+```ts
+{
+    'path': '/create',
+    'method': 'get',
+    'action': getPostCreate
+},{
+    'path': '/create',
+    'method': 'post',
+    'action': getPostCreate
+},
+```
+Note how we are adding two entries for get and post and for same view, inside the view we've checked the request method.
+
+todo- finish `Create a blog post`
+
+
+#### What to do next?
+1. Read more about [typeORM](https://typeorm.io/) they have wonderful docs.
+1. Add features to edit and delete a post.
+1. Add pagination to the home page, where all posts are listed.
+1. Add a base template as all pages share a lot of html code.

@@ -1,4 +1,4 @@
-import { getHome, getPost } from "./controllers";
+import { getHome, getPost, getPostCreate } from "./controllers";
 
 export const AppRoutes = [
     {
@@ -9,5 +9,13 @@ export const AppRoutes = [
         'path': '/post/:id',
         'method': 'get',
         'action': getPost
+    },{
+        'path': '/create',
+        'method': 'get',
+        'action': getPostCreate
+    },{
+        'path': '/create',
+        'method': 'post',
+        'action': getPostCreate
     },
 ]
