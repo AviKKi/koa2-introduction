@@ -516,6 +516,6 @@ export default getPost
 ```
 The `id` in the url can be accessed with `ctx.params.id`. Instead of `.find` we are using `.findOne` to search for the post as only a single result is required, if multiple rows are matched only the first is returned, `.find` returns an array while `findOne` will only return a single array.
 
-When no result is found `.findOne` method will return undefined, in that case we are creating a post with custom title and content to make sure app doesn't crash, you may try redirection user to a `404 page` or render a template that shows `404`.
+When no result is found `.findOne` method will return undefined, in that case we are creating a post with custom title and content to make sure app doesn't crash, a better approach would be redirecting user to a `404 page` or render a template that shows `404 Page not found`, try doing that later.
 
 #### Create a blog post
