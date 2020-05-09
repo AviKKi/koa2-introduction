@@ -402,5 +402,120 @@ that is a lot of code but most important part is, where we loop through allPosts
 ```
 
 #### Blog post page
-Now we need a page where blog posts can be read, 
-todo- do it later
+Now we need a page where blog posts can be read, create a new template `src\views\post.ejs` 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Blog</title>
+    <style>
+        body {
+            margin: 0px;
+            height: 100vh;
+            display: flex;
+        }
+
+        h1 {
+            font-family: sans-serif;
+            color: #3D3D3D;
+        }
+
+        .section {
+            flex: 1;
+        }
+
+        #left-section {
+            background: url('https://images.unsplash.com/photo-1509966756634-9c23dd6e6815?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=720&q=80') no-repeat;
+        }
+
+        #left-section h1 {
+            padding: 0 0.5em;
+            font-size: 3em;
+        }
+
+        #right-section {
+            padding: 25px;
+            background-color: lightcyan;
+        }
+
+        #create-btn {
+            text-decoration: none;
+            background-color: bisque;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            color: purple;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="section" id="left-section">
+        <img style="position: absolute;" src="">
+        <h1>An Awesome Blog</h1>
+    </div>
+    <div class="section" id="right-section">
+        <a id="create-btn" href="/create">
+            Create a Post
+        </a>
+        <h1 style="font-size:2.3em"> <%= post.title %> </h1>
+        <p>
+            <%= post.content %>
+        </p>
+    </div>
+</body>
+
+</html>
+```
+It is same as our `index.ejs` even simpler as we have only one object, we are just printing the blog title and content.
+
+Add a new route for this new view at `src/routes.ts`
+```ts
+import { getHome, getPost } from "./controllers";
+
+export const AppRoutes = [
+    {
+        'path': '/',
+        'method': 'get',
+        'action': getHome
+    },{
+        'path': '/post/:id',
+        'method': 'get',
+        'action': getPost
+    },
+]
+```
+The path here `/post/:id` is special type of url where the id is an variable it can be anything `/post/1`
+ `post/jellies`.
+
+But we still don't have a `getPost` controller so let's create it, add file `src\controllers\getPost.ts`
+```ts
+import { Context } from 'koa'
+import { getManager } from 'typeorm'
+import { BlogPost } from '../entity/BlogPost'
+
+const getPost = async (ctx: Context) => {
+    const { id } = ctx.params
+    const postRepository = getManager().getRepository(BlogPost)
+    let post = await postRepository.findOne({ id })
+    
+    if (post === undefined) {
+        post = new BlogPost()
+        post.title = "404 Not found"
+        post.content = "Post you are looking for was not found in the database."
+    }
+    
+    await ctx.render('post', { post })
+}
+
+export default getPost
+```
+The `id` in the url can be accessed with `ctx.params.id`. Instead of `.find` we are using `.findOne` to search for the post as only a single result is required, if multiple rows are matched only the first is returned, `.find` returns an array while `findOne` will only return a single array.
+
+When no result is found `.findOne` method will return undefined, in that case we are creating a post with custom title and content to make sure app doesn't crash, you may try redirection user to a `404 page` or render a template that shows `404`.
+
+#### Create a blog post
