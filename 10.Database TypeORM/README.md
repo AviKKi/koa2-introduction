@@ -73,7 +73,7 @@ In package.json add dev script
     "@types/koa": "^2.11.3"
   },
   "scripts": {
-    "dev": "nodemon --watch 'src/' -e ejs,ts --exec 'ts-node src/index.ts'"
+    "dev": "nodemon --watch 'src/' -e ejs,ts --exec ts-node src/index.ts"
   }
 }
 ```
