@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Blog</title>
+    <style>
+        body {
+            margin: 0px;
+            height: 100vh;
+            display: flex;
+        }
+
+        h1 {
+            font-family: sans-serif;
+            color: #3D3D3D;
+        }
+
+        .section {
+            flex: 1;
+        }
+
+        #left-section {
+            background: url('https://images.unsplash.com/photo-1509966756634-9c23dd6e6815?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=720&q=80') no-repeat;
+        }
+
+        #left-section h1 {
+            padding: 0 0.5em;
+            font-size: 3em;
+        }
+
+        #right-section {
+            padding: 25px;
+            background-color: lightcyan;
+        }
+
+        .message {
+            min-width: 100px;
+            padding: 10px 20px;
+            border: 1px solid yellowgreen;
+            background-color: rgba(255, 255, 0, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="section" id="left-section">
+        <img style="position: absolute;" src="">
+        <h1>An Awesome Blog</h1>
+    </div>
+    <div class="section" id="right-section">
+        <% if (message!==undefined)  {%>
+        <div class="message"> <%= message %> </div>
+        <% } %>
+        <h1 style="font-size:2.3em">Create a new post</h1>
+        <form method="POST" action="">
+            <input type="text" name="title" placeholder="title"><br />
+            <textarea name="conent" placeholder="content" rows="10"></textarea><br />
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+
+</html>
