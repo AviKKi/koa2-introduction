@@ -28,6 +28,7 @@ These three are main ways to use a database with any language.
 1. Query Builder - 
 
 ## Knex
+Knex.js is a "batteries included" SQL query builder for PostgreSQL, CockroachDB, MSSQL, MySQL, MariaDB, SQLite3, Better-SQLite3, Oracle, and Amazon Redshift designed to be flexible, portable, and fun to use.
 
 ## What we'll make??
 To demonstrate how to insert, retrieve and update data into a database we'll create a todo app, where you can add items to your todo list, and mark them done. 
